@@ -9,6 +9,8 @@ namespace AcademiaDoZe.Domain.Enums
     {
         Administrador = 0,
         Atendente = 1,
-        Instrutor = 2
+        Instrutor = 2,
+        Professor = 3
     }
 }
+

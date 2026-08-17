@@ -1,30 +1,27 @@
 ﻿// Renata Amabile Basquerote
 using AcademiaDoZe.Domain.ValueObjects;
-
 namespace AcademiaDoZe.Domain.Entities;
 
 public abstract class Pessoa : Entity
 {
-    public string Nome { get; }
-    public Cpf Cpf { get; }
-    public DateOnly DataNascimento { get; }
-    public Telefone Telefone { get; }
-    public Email Email { get; }
-    public Endereco Endereco { get; }
-    public Senha Senha { get; }
-    public Arquivo Foto { get; }
-
+    public string Nome { get; protected set; }
+    public Cpf Cpf { get; protected set; }
+    public DateOnly DataNascimento { get; protected set; }
+    public Telefone Telefone { get; protected set; }
+    public Email Email { get; protected set; }
+    public Endereco Endereco { get; protected set; }
+    public Senha Senha { get; protected set; }
+    public Arquivo Foto { get; protected set; }
     protected Pessoa(
-        int id,
-        string nome,
-        Cpf cpf,
-        DateOnly dataNascimento,
-        Telefone telefone,
-        Email email,
-        Endereco endereco,
-        Senha senha,
-        Arquivo foto)
-        : base(id)
+    int id,
+    string nome,
+    Cpf cpf,
+    DateOnly dataNascimento,
+    Telefone telefone,
+    Email email,
+    Endereco endereco,
+    Senha senha,
+    Arquivo foto) : base(id)
     {
         Nome = nome;
         Cpf = cpf;

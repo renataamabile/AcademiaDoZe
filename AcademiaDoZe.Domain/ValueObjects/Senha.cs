@@ -1,36 +1,23 @@
 ﻿// Renata Amabile Basquerote
 using AcademiaDoZe.Domain.Common;
 using AcademiaDoZe.Domain.Services;
-
 namespace AcademiaDoZe.Domain.ValueObjects;
 
 public record Senha
 {
-    public string ChaveAcesso { get; }
-
-    private Senha(string senha)
+    public string Valor { get; }
+    private Senha(string valor)
     {
-        ChaveAcesso = senha;
+        Valor = valor;
     }
-
-    public static Result<Senha> Criar(string senha)
+    public static Result<Senha> Criar(string valor)
     {
-        var notifications = new List<Notification>();
-
-        if (NormalizadoService.TextoVazioOuNulo(senha))
-        {
-            notifications.Add(
-                new Notification("Senha", "SENHA_OBRIGATORIA")
-            );
-        }
-        else
-        {
-            senha = NormalizadoService.LimparEspacos(senha);
-        }
-
-        if (notifications.Count != 0)
-            return Result<Senha>.Failure(notifications);
-
-        return Result<Senha>.Success(new Senha(senha));
+        if (NormalizacaoService.TextoVazioOuNulo(valor))
+            return Result<Senha>.Failure("Senha", "SENHA_OBRIGATORIO");
+        var textoLimpo = NormalizacaoService.LimparEspacos(valor);
+        if (textoLimpo.Length < 6 || !textoLimpo.Any(char.IsUpper))
+            return Result<Senha>.Failure("Senha", "SENHA_FORMATO");
+        return Result<Senha>.Success(new Senha(textoLimpo));
     }
+    public override string ToString() => Valor;
 }

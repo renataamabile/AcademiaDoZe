@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿//Renata Amabile Basquerote
 using System.Text.RegularExpressions;
 namespace AcademiaDoZe.Domain.Services;
 
-public static partial class NormalizadoService
+public static partial class NormalizacaoService
 {
     // verifica se o texto é nulo ou vazio
     public static bool TextoVazioOuNulo(string? texto) => string.IsNullOrWhiteSpace(texto);
@@ -17,5 +14,6 @@ public static partial class NormalizadoService
     public static string ParaMaiusculo(string? texto) => string.IsNullOrEmpty(texto) ? string.Empty : texto.ToUpperInvariant();
     // manter somente digitos numericos
     public static string LimparEDigitos(string? texto) => string.IsNullOrEmpty(texto) ? string.Empty : new string([.. texto.Where(char.IsDigit)]);
-    private static Regex EspacosRegex() => new Regex(@"\s+", RegexOptions.Compiled);
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex EspacosRegex();
 }
