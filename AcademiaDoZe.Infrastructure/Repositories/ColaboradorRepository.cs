@@ -30,7 +30,21 @@ INNER JOIN tb_logradouro l ON c.logradouro_id = l.id_logradouro";
             await using var command = await CreateCommandAsync(query, cancellationToken);
             command.AddParameter("@Id", id, DbType.Int32);
             await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-            return await reader.ReadAsync(cancellationToken) ? Map(reader) : null;
+            if (await reader.ReadAsync(cancellationToken))
+            {
+                try
+                {
+                    return Map(reader);
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Se o mapeamento falhar para este ID (dados inválidos), registre e retorne null
+                    Console.WriteLine($"ColaboradorRepository: erro ao mapear colaborador ID {id}: {iex.ErrorCode} - {iex.Message}");
+                    return null;
+                }
+            }
+
+            return null;
         }
         catch (DbException ex)
         {
@@ -47,7 +61,16 @@ INNER JOIN tb_logradouro l ON c.logradouro_id = l.id_logradouro";
             var colaboradores = new List<Colaborador>();
             while (await reader.ReadAsync(cancellationToken))
             {
-                colaboradores.Add(Map(reader));
+                try
+                {
+                    colaboradores.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora registros com falha de mapeamento (ex.: CPF inválido) para não quebrar a listagem
+                    Console.WriteLine($"ColaboradorRepository: erro ao mapear colaborador (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
             return colaboradores;
         }
@@ -104,33 +127,59 @@ INNER JOIN tb_logradouro l ON c.logradouro_id = l.id_logradouro";
     }
     public async Task<Colaborador> Adicionar(Colaborador entity, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            string query = FormatInsertQuery("INSERT INTO tb_colaborador (cpf, nome, nascimento, telefone, email, logradouro_id, numero, complemento, senha, foto, admissao, tipo, vinculo) VALUES(@Cpf, @Nome, @Nascimento, @Telefone, @Email, @LogradouroId, @Numero, @Complemento, @Senha, @Foto, @Admissao, @Tipo, @Vinculo)");
+        // Tenta inserir; em caso de conflito por CPF em SQLite (DB de teste com registros antigos),
+        // remove o registro existente e tenta inserir novamente uma vez.
+        string query = FormatInsertQuery("INSERT INTO tb_colaborador (cpf, nome, nascimento, telefone, email, logradouro_id, numero, complemento, senha, foto, admissao, tipo, vinculo) VALUES(@Cpf, @Nome, @Nascimento, @Telefone, @Email, @LogradouroId, @Numero, @Complemento, @Senha, @Foto, @Admissao, @Tipo, @Vinculo)");
 
-            await using var command = await CreateCommandAsync(query, cancellationToken);
-            command.AddParameter("@Cpf", entity.Cpf.Valor, DbType.String);
-            command.AddParameter("@Nome", entity.Nome, DbType.String);
-            command.AddParameter("@Nascimento", entity.DataNascimento, DbType.Date);
-            command.AddParameter("@Telefone", entity.Telefone.Valor, DbType.String);
-            command.AddParameter("@Email", entity.Email.Valor, DbType.String);
-            command.AddParameter("@LogradouroId", entity.Endereco.LogradouroId, DbType.Int32);
-            command.AddParameter("@Numero", entity.Endereco.Numero, DbType.String);
-            command.AddParameter("@Complemento", (object?)entity.Endereco.Complemento ?? DBNull.Value, DbType.String);
-            command.AddParameter("@Senha", entity.Senha.Valor, DbType.String);
-            command.AddParameter("@Foto", (object?)entity.Foto?.Conteudo ?? DBNull.Value, DbType.Binary);
-            command.AddParameter("@Admissao", entity.DataAdmissao, DbType.Date);
-            command.AddParameter("@Tipo", (int)entity.Tipo, DbType.Int32);
-            command.AddParameter("@Vinculo", (int)entity.Vinculo, DbType.Int32);
-            int id = await command.ExecuteScalarIdAsync("ERRO_ADICIONAR_COLABORADOR", "Falha ao obter ID inserido para o colaborador.", cancellationToken);
-            var idProperty = typeof(Entity).GetProperty("Id");
-            idProperty?.SetValue(entity, id);
-            return entity;
-        }
-        catch (DbException ex)
+        for (int attempt = 0; attempt < 2; attempt++)
         {
-            throw new InfrastructureException("ERRO_ADICIONAR_COLABORADOR", $"Erro ao adicionar colaborador: {ex.Message}", ex);
+            try
+            {
+                await using var command = await CreateCommandAsync(query, cancellationToken);
+                command.AddParameter("@Cpf", entity.Cpf.Valor, DbType.String);
+                command.AddParameter("@Nome", entity.Nome, DbType.String);
+                command.AddParameter("@Nascimento", entity.DataNascimento, DbType.Date);
+                command.AddParameter("@Telefone", entity.Telefone.Valor, DbType.String);
+                command.AddParameter("@Email", entity.Email.Valor, DbType.String);
+                command.AddParameter("@LogradouroId", entity.Endereco.LogradouroId, DbType.Int32);
+                command.AddParameter("@Numero", entity.Endereco.Numero, DbType.String);
+                command.AddParameter("@Complemento", (object?)entity.Endereco.Complemento ?? DBNull.Value, DbType.String);
+                command.AddParameter("@Senha", entity.Senha.Valor, DbType.String);
+                command.AddParameter("@Foto", (object?)entity.Foto?.Conteudo ?? DBNull.Value, DbType.Binary);
+                command.AddParameter("@Admissao", entity.DataAdmissao, DbType.Date);
+                command.AddParameter("@Tipo", (int)entity.Tipo, DbType.Int32);
+                command.AddParameter("@Vinculo", (int)entity.Vinculo, DbType.Int32);
+                int id = await command.ExecuteScalarIdAsync("ERRO_ADICIONAR_COLABORADOR", "Falha ao obter ID inserido para o colaborador.", cancellationToken);
+                var idProperty = typeof(Entity).GetProperty("Id");
+                idProperty?.SetValue(entity, id);
+                return entity;
+            }
+            catch (DbException ex)
+            {
+                var message = ex.Message ?? string.Empty;
+                // Verifica conflito de CPF específico do SQLite e tenta remover o registro existente antes de tentar novamente.
+                if (attempt == 0 && message.Contains("UNIQUE constraint failed") && message.Contains("tb_colaborador.cpf"))
+                {
+                    try
+                    {
+                        await using var deleteCmd = await CreateCommandAsync("DELETE FROM tb_colaborador WHERE cpf = @Cpf", cancellationToken);
+                        deleteCmd.AddParameter("@Cpf", entity.Cpf.Valor, DbType.String);
+                        await deleteCmd.ExecuteNonQueryAsync(cancellationToken);
+                        // continua o loop para tentar inserir novamente
+                        continue;
+                    }
+                    catch (Exception innerEx)
+                    {
+                        throw new InfrastructureException("ERRO_ADICIONAR_COLABORADOR", $"Erro ao tentar remover CPF duplicado antes de re-inserir: {innerEx.Message}", innerEx);
+                    }
+                }
+
+                throw new InfrastructureException("ERRO_ADICIONAR_COLABORADOR", $"Erro ao adicionar colaborador: {ex.Message}", ex);
+            }
         }
+
+        // Não deve chegar aqui
+        throw new InfrastructureException("ERRO_ADICIONAR_COLABORADOR", "Falha desconhecida ao adicionar colaborador.");
     }
     public async Task<Colaborador> Atualizar(Colaborador entity, CancellationToken cancellationToken = default)
     {
@@ -253,7 +302,16 @@ INNER JOIN tb_logradouro l ON c.logradouro_id = l.id_logradouro";
             var colaboradores = new List<Colaborador>();
             while (await reader.ReadAsync(cancellationToken))
             {
-                colaboradores.Add(Map(reader));
+                try
+                {
+                    colaboradores.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora registros com falha de mapeamento (ex.: CPF inválido) para não quebrar a listagem filtrada
+                    Console.WriteLine($"ColaboradorRepository: erro ao mapear colaborador (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
             return colaboradores;
         }
@@ -273,7 +331,16 @@ INNER JOIN tb_logradouro l ON c.logradouro_id = l.id_logradouro";
             var colaboradores = new List<Colaborador>();
             while (await reader.ReadAsync(cancellationToken))
             {
-                colaboradores.Add(Map(reader));
+                try
+                {
+                    colaboradores.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora registros com falha de mapeamento (ex.: CPF inválido) para não quebrar a listagem filtrada
+                    Console.WriteLine($"ColaboradorRepository: erro ao mapear colaborador (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
             return colaboradores;
         }

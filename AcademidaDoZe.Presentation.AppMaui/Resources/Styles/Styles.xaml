@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Página -->
+    <Style TargetType="ContentPage">
+        <Setter
+            Property="BackgroundColor"
+            Value="{StaticResource PageBackground}" />
+    </Style>
+
+    <!-- Labels -->
+    <Style TargetType="Label">
+        <Setter
+            Property="TextColor"
+            Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <!-- Loading -->
+    <Style TargetType="ActivityIndicator">
+        <Setter
+            Property="Color"
+            Value="{StaticResource PrimaryLight}" />
+    </Style>
+
+    <!-- Título -->
+    <Style
+        x:Key="Headline"
+        TargetType="Label">
+
+        <Setter Property="FontSize" Value="32" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor"
+                Value="{StaticResource PrimaryDark}" />
+        <Setter Property="HorizontalOptions"
+                Value="Center" />
+
+    </Style>
+
+    <!-- Subtítulo -->
+    <Style
+        x:Key="SubHeadline"
+        TargetType="Label">
+
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="TextColor"
+                Value="{StaticResource TextSecondary}" />
+        <Setter Property="HorizontalOptions"
+                Value="Center" />
+
+    </Style>
+
+    <!-- Cards -->
+    <Style
+        x:Key="CardBorder"
+        TargetType="Border">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{StaticResource CardBackground}" />
+
+        <Setter
+            Property="Stroke"
+            Value="{StaticResource CardBorderColor}" />
+
+        <Setter
+            Property="StrokeThickness"
+            Value="1" />
+
+        <Setter
+            Property="Padding"
+            Value="20" />
+
+        <Setter
+            Property="Margin"
+            Value="5" />
+
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="15" />
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+</ResourceDictionary>

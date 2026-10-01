@@ -54,18 +54,34 @@ public class AlunoInfrastructureTests : TestBase
                 new byte[] { 5, 6, 7, 8 })
             .Value!;
 
+        // Gera CPF único contra o banco para reduzir chances de colisão intermitente nos testes
+        string cpf;
+        do
+        {
+            cpf = GerarCpf();
+        }
+        while (await alunoRepo.CpfJaExiste(Cpf.Criar(cpf).Value!));
+
+        // Prepara campos para poder recriar Aluno em caso de CPF duplicado ao inserir
+        var nomeAluno = "Renata Amabile " + Guid.NewGuid().ToString("N")[..5];
+        var dataNascimento = new DateOnly(1995, 5, 15);
+        var telefone = GerarTelefone();
+        var email = GerarEmail();
+        var numero = "200";
+        var complementoAluno = "Basquerote";
+        var senhaBanco = SenhaDoBanco(databaseType);
+
         var alunoResult = Aluno.Criar(
             id: 0,
-            nome: "Renata Amabile " +
-                  Guid.NewGuid().ToString("N")[..5],
-            cpf: GerarCpf(),
-            dataNascimento: new DateOnly(1995, 5, 15),
-            telefone: GerarTelefone(),
-            email: GerarEmail(),
+            nome: nomeAluno,
+            cpf: cpf,
+            dataNascimento: dataNascimento,
+            telefone: telefone,
+            email: email,
             endereco: logradouro,
-            numero: "200",
-            complemento: "Basquerote",
-            senha: SenhaDoBanco(databaseType),
+            numero: numero,
+            complemento: complementoAluno,
+            senha: senhaBanco,
             foto: foto
         );
 
@@ -76,18 +92,70 @@ public class AlunoInfrastructureTests : TestBase
                 $"{string.Join(", ", alunoResult.Notifications.Select(n => n.Mensagem))}");
         }
 
-        return await alunoRepo.Adicionar(
-            alunoResult.Value!);
+        // Tenta inserir, se houver CPF duplicado gera novo CPF e re-tenta (até 5 tentativas)
+        int tentativas = 0;
+        while (true)
+        {
+            try
+            {
+                return await alunoRepo.Adicionar(alunoResult.Value!);
+            }
+            catch (InfrastructureException iex) when (iex.ErrorCode == "CPF_DUPLICADO" && tentativas < 4)
+            {
+                tentativas++;
+                // Gera novo CPF que não existe no banco
+                string novoCpf;
+                do
+                {
+                    novoCpf = GerarCpf();
+                }
+                while (await alunoRepo.CpfJaExiste(Cpf.Criar(novoCpf).Value!));
+
+                // recria o objeto Aluno com novo CPF
+                alunoResult = Aluno.Criar(
+                    id: 0,
+                    nome: nomeAluno,
+                    cpf: novoCpf,
+                    dataNascimento: dataNascimento,
+                    telefone: telefone,
+                    email: email,
+                    endereco: logradouro,
+                    numero: numero,
+                    complemento: complementoAluno,
+                    senha: senhaBanco,
+                    foto: foto
+                );
+
+                if (alunoResult.IsFailure)
+                {
+                    throw new Exception(
+                        $"Falha ao recriar Aluno após CPF duplicado: " +
+                        $"{string.Join(", ", alunoResult.Notifications.Select(n => n.Mensagem))}");
+                }
+            }
+        }
+    }
+
+    // Cria o aluno e registra os dados criados
+    // para que o TestBase faça a limpeza ao final do teste.
+    private async Task<Aluno> CriarAlunoParaTesteAsync()
+    {
+        var aluno = await CriarEInserirAlunoAsync(
+            _alunoRepo,
+            _logradouroRepo,
+            DatabaseType);
+
+        RegistrarAlunoCriado(aluno.Cpf.Valor);
+        RegistrarLogradouroCriado(aluno.Endereco.LogradouroId);
+
+        return aluno;
     }
 
     [Fact]
     public async Task Aluno_Adicionar_E_ObterPorId_Sucesso()
     {
         var aluno =
-            await CriarEInserirAlunoAsync(
-                _alunoRepo,
-                _logradouroRepo,
-                DatabaseType);
+            await CriarAlunoParaTesteAsync();
 
         Assert.NotNull(aluno);
         Assert.True(aluno.Id > 0);
@@ -120,10 +188,7 @@ public class AlunoInfrastructureTests : TestBase
     [Fact]
     public async Task Aluno_ObterTodos_Sucesso()
     {
-        await CriarEInserirAlunoAsync(
-            _alunoRepo,
-            _logradouroRepo,
-            DatabaseType);
+        await CriarAlunoParaTesteAsync();
 
         var todos =
             await _alunoRepo.ObterTodos();
@@ -140,6 +205,8 @@ public class AlunoInfrastructureTests : TestBase
                 .CriarEInserirLogradouroAsync(
                     _logradouroRepo,
                     DatabaseType);
+
+        RegistrarLogradouroCriado(logradouro.Id);
 
         var foto =
             Arquivo.Criar(
@@ -161,6 +228,8 @@ public class AlunoInfrastructureTests : TestBase
                     SenhaDoBanco(DatabaseType),
                     foto
                 ).Value!);
+
+        RegistrarAlunoCriado(aluno.Cpf.Valor);
 
         var novoNome =
             "Renata Amabile Editado " +
@@ -186,6 +255,7 @@ public class AlunoInfrastructureTests : TestBase
                 alunoAtualizado);
 
         Assert.NotNull(resultado);
+
         Assert.Equal(
             novoNome,
             resultado.Nome);
@@ -213,6 +283,8 @@ public class AlunoInfrastructureTests : TestBase
                 .CriarEInserirLogradouroAsync(
                     _logradouroRepo,
                     DatabaseType);
+
+        RegistrarLogradouroCriado(logradouro.Id);
 
         var foto =
             Arquivo.Criar(
@@ -249,10 +321,7 @@ public class AlunoInfrastructureTests : TestBase
     public async Task Aluno_Remover_Sucesso()
     {
         var aluno =
-            await CriarEInserirAlunoAsync(
-                _alunoRepo,
-                _logradouroRepo,
-                DatabaseType);
+            await CriarAlunoParaTesteAsync();
 
         var removido =
             await _alunoRepo.Remover(
@@ -281,10 +350,7 @@ public class AlunoInfrastructureTests : TestBase
     public async Task Aluno_ObterPorCpf_SucessoENulo()
     {
         var aluno =
-            await CriarEInserirAlunoAsync(
-                _alunoRepo,
-                _logradouroRepo,
-                DatabaseType);
+            await CriarAlunoParaTesteAsync();
 
         var obtido =
             await _alunoRepo.ObterPorCpf(
@@ -311,10 +377,7 @@ public class AlunoInfrastructureTests : TestBase
     public async Task Aluno_ObterPorEmail_SucessoENulo()
     {
         var aluno =
-            await CriarEInserirAlunoAsync(
-                _alunoRepo,
-                _logradouroRepo,
-                DatabaseType);
+            await CriarAlunoParaTesteAsync();
 
         var obtido =
             await _alunoRepo.ObterPorEmail(
@@ -341,10 +404,7 @@ public class AlunoInfrastructureTests : TestBase
     public async Task Aluno_CpfJaExiste_ValidacaoCorreta()
     {
         var aluno =
-            await CriarEInserirAlunoAsync(
-                _alunoRepo,
-                _logradouroRepo,
-                DatabaseType);
+            await CriarAlunoParaTesteAsync();
 
         var existe =
             await _alunoRepo.CpfJaExiste(
@@ -374,10 +434,7 @@ public class AlunoInfrastructureTests : TestBase
     public async Task Aluno_EmailJaExiste_ValidacaoCorreta()
     {
         var aluno =
-            await CriarEInserirAlunoAsync(
-                _alunoRepo,
-                _logradouroRepo,
-                DatabaseType);
+            await CriarAlunoParaTesteAsync();
 
         var existe =
             await _alunoRepo.EmailJaExiste(
@@ -407,10 +464,7 @@ public class AlunoInfrastructureTests : TestBase
     public async Task Aluno_ObterPorNome_FiltragemCorreta()
     {
         var aluno =
-            await CriarEInserirAlunoAsync(
-                _alunoRepo,
-                _logradouroRepo,
-                DatabaseType);
+            await CriarAlunoParaTesteAsync();
 
         var resultados =
             await _alunoRepo.ObterPorNome(
@@ -427,10 +481,7 @@ public class AlunoInfrastructureTests : TestBase
     public async Task Aluno_TrocarSenha_SucessoEFalha()
     {
         var aluno =
-            await CriarEInserirAlunoAsync(
-                _alunoRepo,
-                _logradouroRepo,
-                DatabaseType);
+            await CriarAlunoParaTesteAsync();
 
         string novaSenhaTexto =
             SenhaDoBanco(DatabaseType) +

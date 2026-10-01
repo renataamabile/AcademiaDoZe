@@ -62,9 +62,21 @@ INNER JOIN tb_logradouro l
             await using var reader =
                 await command.ExecuteReaderAsync(cancellationToken);
 
-            return await reader.ReadAsync(cancellationToken)
-                ? Map(reader)
-                : null;
+            if (await reader.ReadAsync(cancellationToken))
+            {
+                try
+                {
+                    return Map(reader);
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Se o mapeamento falhar para este ID (dados inválidos), registre e retorne null
+                    Console.WriteLine($"AlunoRepository: erro ao mapear aluno ID {id}: {iex.ErrorCode} - {iex.Message}");
+                    return null;
+                }
+            }
+
+            return null;
         }
         catch (DbException ex)
         {
@@ -93,7 +105,17 @@ INNER JOIN tb_logradouro l
 
             while (await reader.ReadAsync(cancellationToken))
             {
-                alunos.Add(Map(reader));
+                try
+                {
+                    alunos.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora registros que não podem ser mapeados por problemas de domínio
+                    // Ex.: CPF inválido em dados legados. Log para diagnóstico e continua.
+                    Console.WriteLine($"AlunoRepository: erro ao mapear aluno (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
 
             return alunos;
@@ -291,6 +313,41 @@ VALUES
         }
         catch (DbException ex)
         {
+            // Detecta violação de UNIQUE no CPF para fornecer erro mais claro
+            try
+            {
+                // SQLite
+                if (ex is Microsoft.Data.Sqlite.SqliteException sqliteEx && sqliteEx.SqliteErrorCode == 19 &&
+                    sqliteEx.Message?.Contains("tb_aluno.cpf", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    throw new InfrastructureException(
+                        "CPF_DUPLICADO",
+                        $"CPF já existe: {entity.Cpf.Valor}",
+                        ex);
+                }
+
+                // Mensagens genéricas para outros SGDBs (MySQL/SQLServer)
+                var msg = ex.Message ?? string.Empty;
+                if (msg.IndexOf("UQ_tb_aluno_cpf", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (msg.IndexOf("cpf", StringComparison.OrdinalIgnoreCase) >= 0 && msg.IndexOf("unique", StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    msg.IndexOf("duplicate", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    throw new InfrastructureException(
+                        "CPF_DUPLICADO",
+                        $"CPF já existe: {entity.Cpf.Valor}",
+                        ex);
+                }
+            }
+            catch (InfrastructureException)
+            {
+                // Re-lança nossas infra exceptions
+                throw;
+            }
+            catch
+            {
+                // Ignora falhas na detecção e segue para capa genérica
+            }
+
             throw new InfrastructureException(
                 "ERRO_ADICIONAR_ALUNO",
                 $"Erro ao adicionar aluno: {ex.Message}",

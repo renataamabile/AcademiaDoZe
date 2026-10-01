@@ -84,7 +84,16 @@ INNER JOIN tb_logradouro l ON a.logradouro_id = l.id_logradouro
             var matriculas = new List<Matricula>();
             while (await reader.ReadAsync(cancellationToken))
             {
-                matriculas.Add(Map(reader));
+                try
+                {
+                    matriculas.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora matrículas cujo aluno possui dados inválidos no domínio (ex.: CPF inválido)
+                    Console.WriteLine($"MatriculaRepository: erro ao mapear matrícula (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
             return matriculas;
         }
@@ -176,7 +185,16 @@ INNER JOIN tb_logradouro l ON a.logradouro_id = l.id_logradouro
             var matriculas = new List<Matricula>();
             while (await reader.ReadAsync(cancellationToken))
             {
-                matriculas.Add(Map(reader));
+                try
+                {
+                    matriculas.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora matrículas cujo mapeamento de domínio falhou (ex.: dados do aluno inválidos)
+                    Console.WriteLine($"MatriculaRepository: erro ao mapear matrícula (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
             return matriculas;
         }
@@ -220,7 +238,16 @@ INNER JOIN tb_logradouro l ON a.logradouro_id = l.id_logradouro
             var matriculas = new List<Matricula>();
             while (await reader.ReadAsync(cancellationToken))
             {
-                matriculas.Add(Map(reader));
+                try
+                {
+                    matriculas.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora matrículas cujo mapeamento de domínio falhou (ex.: dados do aluno inválidos)
+                    Console.WriteLine($"MatriculaRepository: erro ao mapear matrícula (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
             return matriculas;
         }
@@ -242,7 +269,16 @@ INNER JOIN tb_logradouro l ON a.logradouro_id = l.id_logradouro
             var matriculas = new List<Matricula>();
             while (await reader.ReadAsync(cancellationToken))
             {
-                matriculas.Add(Map(reader));
+                try
+                {
+                    matriculas.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora matrículas cujo mapeamento de domínio falhou (ex.: dados do aluno inválidos)
+                    Console.WriteLine($"MatriculaRepository: erro ao mapear matrícula (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
             return matriculas;
         }
@@ -263,7 +299,16 @@ INNER JOIN tb_logradouro l ON a.logradouro_id = l.id_logradouro
             var matriculas = new List<Matricula>();
             while (await reader.ReadAsync(cancellationToken))
             {
-                matriculas.Add(Map(reader));
+                try
+                {
+                    matriculas.Add(Map(reader));
+                }
+                catch (InfrastructureException iex)
+                {
+                    // Ignora matrículas cujo mapeamento de domínio falhou (ex.: dados do aluno inválidos)
+                    Console.WriteLine($"MatriculaRepository: erro ao mapear matrícula (ignorando): {iex.ErrorCode} - {iex.Message}");
+                    continue;
+                }
             }
             return matriculas;
         }

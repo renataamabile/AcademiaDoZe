@@ -1,5 +1,4 @@
 // Renata Amabile Basquerote
-// Renata Amabile Basquerote
 
 using AcademiaDoZe.Domain.Entities;
 using AcademiaDoZe.Domain.ValueObjects;
@@ -65,7 +64,10 @@ public class LogradouroInfrastructureTests : TestBase
                 $"{string.Join(", ", resultado.Notifications.Select(n => n.Mensagem))}");
         }
 
-        return await logradouroRepo.Adicionar(resultado.Value!);
+        var inserido =
+            await logradouroRepo.Adicionar(resultado.Value!);
+
+        return inserido;
     }
 
     [Fact]
@@ -82,7 +84,10 @@ public class LogradouroInfrastructureTests : TestBase
             "SC",
             "Brasil").Value!;
 
-        var inserido = await _repository.Adicionar(logradouro);
+        var inserido =
+            await _repository.Adicionar(logradouro);
+
+        RegistrarLogradouroCriado(inserido.Id);
 
         Assert.NotNull(inserido);
         Assert.True(inserido.Id > 0);
@@ -132,6 +137,8 @@ public class LogradouroInfrastructureTests : TestBase
             await CriarEInserirLogradouroAsync(
                 _repository,
                 DatabaseType);
+
+        RegistrarLogradouroCriado(logradouro.Id);
 
         var novoCep = GerarCep();
 
@@ -190,6 +197,8 @@ public class LogradouroInfrastructureTests : TestBase
                 _repository,
                 DatabaseType);
 
+        RegistrarLogradouroCriado(logradouro.Id);
+
         var removido =
             await _repository.Remover(logradouro.Id);
 
@@ -218,6 +227,8 @@ public class LogradouroInfrastructureTests : TestBase
                 _repository,
                 DatabaseType);
 
+        RegistrarLogradouroCriado(logradouro.Id);
+
         var obtido =
             await _repository.ObterPorCep(logradouro.Cep);
 
@@ -242,6 +253,8 @@ public class LogradouroInfrastructureTests : TestBase
             await CriarEInserirLogradouroAsync(
                 _repository,
                 DatabaseType);
+
+        RegistrarLogradouroCriado(logradouro.Id);
 
         Assert.True(
             await _repository.CepJaExiste(
@@ -276,7 +289,10 @@ public class LogradouroInfrastructureTests : TestBase
             "SC",
             "Brasil").Value!;
 
-        await _repository.Adicionar(logradouro);
+        var inserido =
+            await _repository.Adicionar(logradouro);
+
+        RegistrarLogradouroCriado(inserido.Id);
 
         var resultados =
             await _repository.ObterPorCidade(
@@ -315,7 +331,10 @@ public class LogradouroInfrastructureTests : TestBase
             "SC",
             "Brasil").Value!;
 
-        await _repository.Adicionar(logradouro);
+        var inserido =
+            await _repository.Adicionar(logradouro);
+
+        RegistrarLogradouroCriado(inserido.Id);
 
         var resultados =
             await _repository.ObterPorBairro(
