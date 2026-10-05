@@ -1,6 +1,5 @@
 ﻿using AcademiaDoZe.Application.Interfaces;
 using CommunityToolkit.Mvvm.Input;
-using System.Diagnostics;
 
 namespace AcademiaDoZe.Presentation.AppMaui.ViewModels;
 
@@ -11,12 +10,14 @@ public partial class DashboardListViewModel : BaseViewModel
     private readonly IColaboradorService _colaboradorService;
     private readonly IMatriculaService _matriculaService;
 
+
     private int _totalLogradouros;
     public int TotalLogradouros
     {
         get => _totalLogradouros;
         set => SetProperty(ref _totalLogradouros, value);
     }
+
 
     private int _totalAlunos;
     public int TotalAlunos
@@ -25,6 +26,7 @@ public partial class DashboardListViewModel : BaseViewModel
         set => SetProperty(ref _totalAlunos, value);
     }
 
+
     private int _totalColaboradores;
     public int TotalColaboradores
     {
@@ -32,12 +34,14 @@ public partial class DashboardListViewModel : BaseViewModel
         set => SetProperty(ref _totalColaboradores, value);
     }
 
+
     private int _totalMatriculas;
     public int TotalMatriculas
     {
         get => _totalMatriculas;
         set => SetProperty(ref _totalMatriculas, value);
     }
+
 
     public DashboardListViewModel(
         ILogradouroService logradouroService,
@@ -51,8 +55,8 @@ public partial class DashboardListViewModel : BaseViewModel
         _matriculaService = matriculaService;
 
         Title = "Dashboard";
-        IsBusy = false;
     }
+
 
     [RelayCommand]
     private async Task LoadDashboardDataAsync()
@@ -64,64 +68,57 @@ public partial class DashboardListViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            using var cts =
-                new CancellationTokenSource(
-                    TimeSpan.FromSeconds(10));
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
 
-            Debug.WriteLine("========================================");
-            Debug.WriteLine("INICIANDO CARREGAMENTO DO DASHBOARD");
-            Debug.WriteLine("========================================");
 
-            var logradouros =
-                await _logradouroService.ObterTodosAsync(cts.Token);
+            var logradourosTask =
+                _logradouroService.ObterTodosAsync(
+                    cts.Token);
 
-            Debug.WriteLine(
-                $"Logradouros encontrados: {logradouros.Count()}");
+            var alunosTask =
+                _alunoService.ObterTodosAsync(
+                    cts.Token);
 
-            var alunos =
-                await _alunoService.ObterTodosAsync(cts.Token);
+            var colaboradoresTask =
+                _colaboradorService.ObterTodosAsync(
+                    cts.Token);
 
-            Debug.WriteLine(
-                $"Alunos encontrados: {alunos.Count()}");
+            var matriculasTask =
+                _matriculaService.ObterTodasAsync(
+                    cts.Token);
 
-            var colaboradores =
-                await _colaboradorService.ObterTodosAsync(cts.Token);
 
-            Debug.WriteLine(
-                $"Colaboradores encontrados: {colaboradores.Count()}");
+            await Task.WhenAll(
+                logradourosTask,
+                alunosTask,
+                colaboradoresTask,
+                matriculasTask);
 
-            var matriculas =
-                await _matriculaService.ObterTodasAsync(cts.Token);
 
-            Debug.WriteLine(
-                $"Matrículas encontradas: {matriculas.Count()}");
+            TotalLogradouros =
+                (await logradourosTask).Count();
 
-            TotalLogradouros = logradouros.Count();
-            TotalAlunos = alunos.Count();
-            TotalColaboradores = colaboradores.Count();
-            TotalMatriculas = matriculas.Count();
+            TotalAlunos =
+                (await alunosTask).Count();
 
-            Debug.WriteLine("========================================");
-            Debug.WriteLine("DASHBOARD CARREGADO");
-            Debug.WriteLine("========================================");
+            TotalColaboradores =
+                (await colaboradoresTask).Count();
+
+            TotalMatriculas =
+                (await matriculasTask).Count();
         }
         catch (OperationCanceledException)
         {
             await Shell.Current.DisplayAlertAsync(
                 "Tempo Esgotado",
-                "A consulta ao banco de dados demorou mais que o esperado.",
+                "A conexão com o banco de dados expirou. Verifique o caminho ou os dados de conexão.",
                 "OK");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine("========================================");
-            Debug.WriteLine("ERRO NO DASHBOARD");
-            Debug.WriteLine(ex.ToString());
-            Debug.WriteLine("========================================");
-
             await Shell.Current.DisplayAlertAsync(
                 "Erro",
-                $"Erro ao carregar dados:\n{ex.Message}",
+                $"Erro ao carregar dados do painel: {ex.Message}",
                 "OK");
         }
         finally
@@ -130,11 +127,13 @@ public partial class DashboardListViewModel : BaseViewModel
         }
     }
 
+
     [RelayCommand]
     private async Task NavigateToLogradourosAsync()
     {
         await Shell.Current.GoToAsync("//logradouros");
     }
+
 
     [RelayCommand]
     private async Task NavigateToAlunosAsync()
@@ -142,11 +141,13 @@ public partial class DashboardListViewModel : BaseViewModel
         await Shell.Current.GoToAsync("//alunos");
     }
 
+
     [RelayCommand]
     private async Task NavigateToColaboradoresAsync()
     {
         await Shell.Current.GoToAsync("//colaboradores");
     }
+
 
     [RelayCommand]
     private async Task NavigateToMatriculasAsync()

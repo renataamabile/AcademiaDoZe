@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Cores principais -->
+    <Color x:Key="Primary">#7B2CBF</Color>
+    <Color x:Key="PrimaryDark">#5A189A</Color>
+    <Color x:Key="PrimaryLight">#9D4EDD</Color>
+    <Color x:Key="Secondary">#0077B6</Color>
+
+    <!-- Fundos -->
+    <Color x:Key="PageBackground">#F7F4FA</Color>
+    <Color x:Key="CardBackground">#FFFFFF</Color>
+    <Color x:Key="CardBorderColor">#D8CBE3</Color>
+
+    <!-- Textos -->
+    <Color x:Key="TextPrimary">#211A26</Color>
+    <Color x:Key="TextSecondary">#665A6F</Color>
+    <Color x:Key="TextOnPrimary">#FFFFFF</Color>
+
+    <!-- Campos -->
+    <Color x:Key="InputBackground">#FFFFFF</Color>
+    <Color x:Key="InputBorderColor">#C9B8D5</Color>
+    <Color x:Key="InputTextColor">#211A26</Color>
+    <Color x:Key="PlaceholderColor">#82758B</Color>
+
+    <!-- Menu -->
+    <Color x:Key="MenuBackground">#FFFFFF</Color>
+    <Color x:Key="MenuTextColor">#2B2232</Color>
+    <Color x:Key="MenuSelectedBackground">#F0E7F7</Color>
+    <Color x:Key="MenuSelectedTextColor">#7B2CBF</Color>
+
+    <!-- Estados -->
+    <Color x:Key="SuccessColor">#16803C</Color>
+    <Color x:Key="DangerColor">#C62828</Color>
+    <Color x:Key="WarningColor">#A15C00</Color>
+
+    <!-- Básicas -->
+    <Color x:Key="White">#FFFFFF</Color>
+    <Color x:Key="Black">#000000</Color>
+
+</ResourceDictionary>

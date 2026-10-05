@@ -41,7 +41,10 @@ public static class DbProvider
         }
         catch (Exception ex) when (ex is not InfrastructureException)
         {
-            throw new InfrastructureException("FALHA_CONEXAO", $"Falha ao abrir conexão para {dbType}.", ex);
+            throw new InfrastructureException(
+                "FALHA_CONEXAO",
+                $"Falha ao abrir conexão para {dbType}: {ex.Message}",
+                ex);
         }
     }
 

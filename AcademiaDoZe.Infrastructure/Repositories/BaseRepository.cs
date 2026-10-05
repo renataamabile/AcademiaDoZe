@@ -63,9 +63,13 @@ public abstract class BaseRepository : IDisposable, IAsyncDisposable
         }
         catch (DbException ex)
         {
+            var mensagem = ex.InnerException == null
+                ? ex.Message
+                : $"{ex.Message} | Interno: {ex.InnerException.Message}";
+
             throw new InfrastructureException(
                 "FALHA_ABRIR_CONEXAO",
-                "Falha ao abrir conexão com o banco de dados.",
+                $"Falha ao abrir conexão com o banco de dados: {mensagem}",
                 ex);
         }
     }

@@ -9,7 +9,8 @@
             Spacing="25">
             <Image
                 Source="dotnet_bot.png"
-                HeightRequest="185"
+                HeightRequest="250"
+                WidthRequest="250"
                 Aspect="AspectFit"
                 SemanticProperties.Description="dot net bot in a submarine number ten" />
 

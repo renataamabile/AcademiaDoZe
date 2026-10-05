@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ========================================================= -->
+    <!-- PÁGINA                                                     -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="ContentPage">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{AppThemeBinding Light=#F7F4FA, Dark=#17141C}" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- LABEL                                                       -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="Label">
+
+        <Setter
+            Property="TextColor"
+            Value="{AppThemeBinding Light=#211A26, Dark=#FFFFFF}" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- TÍTULO                                                      -->
+    <!-- ========================================================= -->
+
+    <Style
+        x:Key="Headline"
+        TargetType="Label">
+
+        <Setter
+            Property="FontSize"
+            Value="32" />
+
+        <Setter
+            Property="FontAttributes"
+            Value="Bold" />
+
+        <Setter
+            Property="TextColor"
+            Value="{AppThemeBinding Light=#5A189A, Dark=#E0AAFF}" />
+
+        <Setter
+            Property="HorizontalOptions"
+            Value="Center" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- SUBTÍTULO                                                   -->
+    <!-- ========================================================= -->
+
+    <Style
+        x:Key="SubHeadline"
+        TargetType="Label">
+
+        <Setter
+            Property="FontSize"
+            Value="18" />
+
+        <Setter
+            Property="TextColor"
+            Value="{AppThemeBinding Light=#665A6F, Dark=#D8CDE0}" />
+
+        <Setter
+            Property="HorizontalOptions"
+            Value="Center" />
+
+    </Style>
+
+    <!-- Ícones Material Icons -->
+    <Style
+    x:Key="MaterialIcon"
+    TargetType="Label">
+
+        <Setter
+        Property="FontFamily"
+        Value="MaterialIcons" />
+
+        <Setter
+        Property="FontSize"
+        Value="32" />
+
+        <Setter
+        Property="TextColor"
+        Value="{AppThemeBinding Light=Black, Dark=White}" />
+
+        <Setter
+        Property="HorizontalTextAlignment"
+        Value="Center" />
+
+        <Setter
+        Property="HorizontalOptions"
+        Value="Center" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- ACTIVITY INDICATOR                                         -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="ActivityIndicator">
+
+        <Setter
+            Property="Color"
+            Value="{AppThemeBinding Light=#7B2CBF, Dark=#E0AAFF}" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- CARD                                                        -->
+    <!-- ========================================================= -->
+
+    <Style
+        x:Key="CardBorder"
+        TargetType="Border">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{AppThemeBinding Light=#FFFFFF, Dark=#28222F}" />
+
+        <Setter
+            Property="Stroke"
+            Value="{AppThemeBinding Light=#D8CBE3, Dark=#51445C}" />
+
+        <Setter
+            Property="StrokeThickness"
+            Value="1" />
+
+        <Setter
+            Property="Padding"
+            Value="20" />
+
+        <Setter
+            Property="Margin"
+            Value="5" />
+
+        <Setter Property="StrokeShape">
+
+            <Setter.Value>
+
+                <RoundRectangle
+                    CornerRadius="15" />
+
+            </Setter.Value>
+
+        </Setter>
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- BOTÃO PRINCIPAL                                             -->
+    <!-- ========================================================= -->
+
+    <Style
+        x:Key="ButtonPrimary"
+        TargetType="Button">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{AppThemeBinding Light=#7B2CBF, Dark=#9D4EDD}" />
+
+        <Setter
+            Property="TextColor"
+            Value="#FFFFFF" />
+
+        <Setter
+            Property="FontSize"
+            Value="16" />
+
+        <Setter
+            Property="FontAttributes"
+            Value="Bold" />
+
+        <Setter
+            Property="CornerRadius"
+            Value="25" />
+
+        <Setter
+            Property="HeightRequest"
+            Value="50" />
+
+        <Setter
+            Property="Padding"
+            Value="20,0" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- BOTÃO SECUNDÁRIO                                           -->
+    <!-- ========================================================= -->
+
+    <Style
+        x:Key="ButtonSecondary"
+        TargetType="Button">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="Transparent" />
+
+        <Setter
+            Property="TextColor"
+            Value="{AppThemeBinding Light=#5A189A, Dark=#E0AAFF}" />
+
+        <Setter
+            Property="BorderColor"
+            Value="{AppThemeBinding Light=#D8CBE3, Dark=#51445C}" />
+
+        <Setter
+            Property="BorderWidth"
+            Value="1" />
+
+        <Setter
+            Property="FontSize"
+            Value="16" />
+
+        <Setter
+            Property="FontAttributes"
+            Value="Bold" />
+
+        <Setter
+            Property="CornerRadius"
+            Value="25" />
+
+        <Setter
+            Property="HeightRequest"
+            Value="50" />
+
+        <Setter
+            Property="Padding"
+            Value="20,0" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- BOTÃO PEQUENO                                               -->
+    <!-- ========================================================= -->
+
+    <Style
+        x:Key="ButtonSmall"
+        TargetType="Button">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{AppThemeBinding Light=#7B2CBF, Dark=#9D4EDD}" />
+
+        <Setter
+            Property="TextColor"
+            Value="#FFFFFF" />
+
+        <Setter
+            Property="FontSize"
+            Value="14" />
+
+        <Setter
+            Property="CornerRadius"
+            Value="15" />
+
+        <Setter
+            Property="HeightRequest"
+            Value="40" />
+
+        <Setter
+            Property="Padding"
+            Value="15,0" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- BOTÃO EXCLUIR                                               -->
+    <!-- ========================================================= -->
+
+    <Style
+        x:Key="ButtonDanger"
+        TargetType="Button">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="#C62828" />
+
+        <Setter
+            Property="TextColor"
+            Value="#FFFFFF" />
+
+        <Setter
+            Property="FontSize"
+            Value="14" />
+
+        <Setter
+            Property="CornerRadius"
+            Value="15" />
+
+        <Setter
+            Property="HeightRequest"
+            Value="40" />
+
+        <Setter
+            Property="Padding"
+            Value="15,0" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- ENTRY                                                        -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="Entry">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{AppThemeBinding Light=#FFFFFF, Dark=#312A38}" />
+
+        <Setter
+            Property="TextColor"
+            Value="{AppThemeBinding Light=#211A26, Dark=#FFFFFF}" />
+
+        <Setter
+            Property="PlaceholderColor"
+            Value="{AppThemeBinding Light=#82758B, Dark=#AFA3B8}" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- EDITOR                                                      -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="Editor">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{AppThemeBinding Light=#FFFFFF, Dark=#312A38}" />
+
+        <Setter
+            Property="TextColor"
+            Value="{AppThemeBinding Light=#211A26, Dark=#FFFFFF}" />
+
+        <Setter
+            Property="PlaceholderColor"
+            Value="{AppThemeBinding Light=#82758B, Dark=#AFA3B8}" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- PICKER                                                      -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="Picker">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{AppThemeBinding Light=#FFFFFF, Dark=#312A38}" />
+
+        <Setter
+            Property="TextColor"
+            Value="{AppThemeBinding Light=#211A26, Dark=#FFFFFF}" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- SEARCH BAR                                                  -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="SearchBar">
+
+        <Setter
+            Property="BackgroundColor"
+            Value="{AppThemeBinding Light=#FFFFFF, Dark=#312A38}" />
+
+        <Setter
+            Property="TextColor"
+            Value="{AppThemeBinding Light=#211A26, Dark=#FFFFFF}" />
+
+        <Setter
+            Property="PlaceholderColor"
+            Value="{AppThemeBinding Light=#82758B, Dark=#AFA3B8}" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- CHECKBOX                                                    -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="CheckBox">
+
+        <Setter
+            Property="Color"
+            Value="{AppThemeBinding Light=#7B2CBF, Dark=#E0AAFF}" />
+
+    </Style>
+
+
+    <!-- ========================================================= -->
+    <!-- SWITCH                                                      -->
+    <!-- ========================================================= -->
+
+    <Style TargetType="Switch">
+
+        <Setter
+            Property="OnColor"
+            Value="{AppThemeBinding Light=#7B2CBF, Dark=#9D4EDD}" />
+
+        <Setter
+            Property="ThumbColor"
+            Value="{AppThemeBinding Light=#5A189A, Dark=#E0AAFF}" />
+
+    </Style>
+
+
+</ResourceDictionary>
