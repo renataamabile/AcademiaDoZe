@@ -58,4 +58,30 @@
 
     </FlyoutItem>
 
+    <!-- Colaboradores -->
+    <FlyoutItem Title="Colaboradores">
+        <FlyoutItem.Icon>
+            <FontImageSource
+            FontFamily="MaterialIcons"
+            Glyph="&#xea67;" />
+        </FlyoutItem.Icon>
+
+        <ShellContent
+        ContentTemplate="{DataTemplate views:ColaboradorListPage}"
+        Route="colaboradores" />
+    </FlyoutItem>
+
+    <!-- Alunos -->
+    <FlyoutItem Title="Alunos">
+        <FlyoutItem.Icon>
+            <FontImageSource
+            FontFamily="MaterialIcons"
+            Glyph="&#xe7fd;" />
+        </FlyoutItem.Icon>
+
+        <ShellContent
+        ContentTemplate="{DataTemplate views:AlunoListPage}"
+        Route="alunos" />
+    </FlyoutItem>
+
 </Shell>

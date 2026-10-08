@@ -21,8 +21,9 @@
                     Source="academiadoze.png"
                     HorizontalOptions="Center"
                     VerticalOptions="Start"
-                    HeightRequest="200"
-                    WidthRequest="200" />
+                    HeightRequest="320"
+                    WidthRequest="320"
+                    Aspect="AspectFit" />
 
                 <Label
                     Text="Academia do Zé"
@@ -57,7 +58,6 @@
 
                     <StackLayout Spacing="10">
 
-                        <!-- Ícone Material Icons -->
                         <Label
                             Text="&#xe7f1;"
                             Style="{StaticResource MaterialIcon}" />
@@ -89,7 +89,6 @@
 
                     <StackLayout Spacing="10">
 
-                        <!-- Ícone Material Icons -->
                         <Label
                             Text="&#xe80c;"
                             Style="{StaticResource MaterialIcon}" />
@@ -121,7 +120,6 @@
 
                     <StackLayout Spacing="10">
 
-                        <!-- Ícone Material Icons -->
                         <Label
                             Text="&#xea67;"
                             Style="{StaticResource MaterialIcon}" />
@@ -153,7 +151,6 @@
 
                     <StackLayout Spacing="10">
 
-                        <!-- Ícone Material Icons -->
                         <Label
                             Text="&#xefec;"
                             Style="{StaticResource MaterialIcon}" />
