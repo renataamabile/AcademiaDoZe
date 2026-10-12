@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:AcademiaDoZe.Presentation.AppMaui.ViewModels"
+    xmlns:dto="clr-namespace:AcademiaDoZe.Application.DTOs;assembly=AcademiaDoZe.Application"
+    xmlns:converters="clr-namespace:AcademiaDoZe.Presentation.AppMaui.Converters"
+    x:Class="AcademiaDoZe.Presentation.AppMaui.Views.MatriculaListPage"
+    x:Name="MatriculasPage"
+    x:DataType="vm:MatriculaListViewModel"
+    Title="{Binding Title}">
+
+    <ContentPage.Resources>
+
+        <!-- Conversores -->
+        <converters:FotoToImageSourceConverter
+            x:Key="FotoToImageSourceConverter" />
+
+        <converters:EnumDisplayConverter
+            x:Key="EnumDisplay" />
+
+        <converters:RestricoesFlagsDisplayConverter
+            x:Key="RestricoesDisplay" />
+
+        <!-- Template dos cartões de matrícula -->
+        <DataTemplate
+            x:Key="MatriculaItemTemplate"
+            x:DataType="dto:MatriculaDto">
+
+            <SwipeView>
+
+                <SwipeView.RightItems>
+                    <SwipeItems>
+
+                        <SwipeItem
+                            Text="Editar"
+                            BackgroundColor="DodgerBlue"
+                            Command="{Binding BindingContext.EditMatriculaCommand,
+                                Source={x:Reference MatriculasPage}}"
+                            CommandParameter="{Binding .}" />
+
+                        <SwipeItem
+                            Text="Excluir"
+                            BackgroundColor="Red"
+                            Command="{Binding BindingContext.DeleteMatriculaCommand,
+                                Source={x:Reference MatriculasPage}}"
+                            CommandParameter="{Binding .}" />
+
+                    </SwipeItems>
+                </SwipeView.RightItems>
+
+                <Grid Padding="1" Margin="5">
+
+                    <Border
+                        Style="{StaticResource CardBorder}"
+                        Margin="10">
+
+                        <Grid
+                            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                            ColumnDefinitions="*,Auto,Auto">
+
+                            <!-- Foto do aluno -->
+                            <Border
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Grid.RowSpan="7"
+                                HeightRequest="110"
+                                WidthRequest="110"
+                                StrokeShape="RoundRectangle 12"
+                                Stroke="{AppThemeBinding Light=LightGray, Dark=Gray}"
+                                StrokeThickness="1"
+                                BackgroundColor="{AppThemeBinding Light=White, Dark=#202020}"
+                                Margin="0,0,10,0"
+                                VerticalOptions="Center">
+
+                                <Image
+                                    Source="{Binding AlunoMatricula.Foto,
+                                        Converter={StaticResource FotoToImageSourceConverter}}"
+                                    Aspect="AspectFill"
+                                    HeightRequest="110"
+                                    WidthRequest="110" />
+
+                            </Border>
+
+                            <!-- Nome do aluno -->
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Text="{Binding AlunoMatricula.Nome}"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Margin="0,0,0,2"
+                                LineBreakMode="TailTruncation"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+
+                            <!-- CPF e data de nascimento -->
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,0,0,4"
+                                FontSize="12"
+                                TextColor="{AppThemeBinding Light=DimGray, Dark=LightGray}">
+
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="CPF: " />
+                                        <Span Text="{Binding AlunoMatricula.Cpf}" />
+                                        <Span Text=" • Nasc: " />
+                                        <Span Text="{Binding AlunoMatricula.DataNascimento,
+                                            StringFormat='{0:dd/MM/yyyy}'}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+
+                            </Label>
+
+                            <!-- Plano -->
+                            <HorizontalStackLayout
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Spacing="8"
+                                Margin="0,0,0,4">
+
+                                <Border
+                                    Padding="8,2"
+                                    StrokeShape="RoundRectangle 4"
+                                    BackgroundColor="{AppThemeBinding Light=#512BD4, Dark=#8066E0}">
+
+                                    <Label
+                                        Text="{Binding Plano,
+                                            Converter={StaticResource EnumDisplay}}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"
+                                        TextColor="White" />
+
+                                </Border>
+
+                            </HorizontalStackLayout>
+
+                            <!-- Vigência -->
+                            <Label
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Margin="0,0,0,3"
+                                FontSize="12"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}">
+
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span
+                                            Text="Vigência: "
+                                            FontAttributes="Bold" />
+
+                                        <Span
+                                            Text="{Binding DataInicio,
+                                                StringFormat='{0:dd/MM/yyyy}'}" />
+
+                                        <Span Text=" até " />
+
+                                        <Span
+                                            Text="{Binding DataFim,
+                                                StringFormat='{0:dd/MM/yyyy}'}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+
+                            </Label>
+
+                            <!-- Objetivo -->
+                            <Label
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Margin="0,0,0,3"
+                                FontSize="12"
+                                LineBreakMode="TailTruncation"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}">
+
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span
+                                            Text="Objetivo: "
+                                            FontAttributes="Bold" />
+
+                                        <Span Text="{Binding Objetivo}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+
+                            </Label>
+
+                            <!-- Restrições médicas -->
+                            <Label
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Margin="0,0,0,3"
+                                FontSize="12"
+                                LineBreakMode="TailTruncation"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}">
+
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span
+                                            Text="Restrições: "
+                                            FontAttributes="Bold" />
+
+                                        <Span
+                                            Text="{Binding RestricoesMedicas,
+                                                Converter={StaticResource RestricoesDisplay}}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+
+                            </Label>
+
+                            <!-- Observações -->
+                            <Label
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Text="{Binding ObservacoesRestricoes,
+                                    StringFormat='Obs: {0}'}"
+                                FontSize="11"
+                                TextColor="{AppThemeBinding Light=DimGray, Dark=LightGray}"
+                                LineBreakMode="TailTruncation"
+                                Margin="0,0,0,2" />
+
+                            <!-- Ações adicionais -->
+                            <Button
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text=""
+                                Style="{StaticResource ButtonSmall}"
+                                Margin="4,0"
+                                Clicked="OnMoreClicked"
+                                CommandParameter="{Binding .}">
+
+                                <Button.ImageSource>
+                                    <FontImageSource
+                                        FontFamily="MaterialIcons"
+                                        Glyph="&#xe5d4;" />
+                                </Button.ImageSource>
+
+                            </Button>
+
+                        </Grid>
+
+                    </Border>
+
+                </Grid>
+
+            </SwipeView>
+
+        </DataTemplate>
+
+    </ContentPage.Resources>
+
+    <!-- Conteúdo principal -->
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Pesquisa e filtros -->
+        <Border
+            Grid.Row="0"
+            Style="{StaticResource CardBorder}"
+            Margin="15,10">
+
+            <Grid
+                ColumnDefinitions="Auto,10,*,10,Auto"
+                VerticalOptions="Center">
+
+                <Picker
+                    Grid.Column="0"
+                    Title="Filtro"
+                    ItemsSource="{Binding FilterTypes}"
+                    SelectedItem="{Binding SelectedFilterType}"
+                    WidthRequest="110"
+                    HorizontalOptions="Start"
+                    HeightRequest="40"
+                    VerticalOptions="Center" />
+
+                <Entry
+                    Grid.Column="2"
+                    Text="{Binding SearchText}"
+                    Placeholder="Digite o valor..."
+                    HeightRequest="40"
+                    VerticalOptions="Center"
+                    ClearButtonVisibility="WhileEditing"
+                    ReturnCommand="{Binding SearchMatriculasCommand}" />
+
+                <Button
+                    Grid.Column="4"
+                    Text=""
+                    Style="{StaticResource ButtonPrimary}"
+                    FontSize="14"
+                    WidthRequest="80"
+                    HeightRequest="40"
+                    Command="{Binding SearchMatriculasCommand}">
+
+                    <Button.ImageSource>
+                        <FontImageSource
+                            FontFamily="MaterialIcons"
+                            Glyph="&#xe8b6;" />
+                    </Button.ImageSource>
+
+                </Button>
+
+            </Grid>
+
+        </Border>
+
+        <!-- Lista e botão de adicionar -->
+        <Grid Grid.Row="1">
+
+            <RefreshView
+                IsRefreshing="{Binding IsRefreshing}"
+                Command="{Binding RefreshCommand}">
+
+                <CollectionView
+                    ItemsSource="{Binding Matriculas}"
+                    SelectionMode="None"
+                    Margin="10">
+
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical">
+
+                            <GridItemsLayout.Span>
+                                <OnIdiom x:TypeArguments="x:Int32">
+                                    <OnIdiom.Phone>1</OnIdiom.Phone>
+                                    <OnIdiom.Default>1</OnIdiom.Default>
+                                    <OnIdiom.Tablet>2</OnIdiom.Tablet>
+                                    <OnIdiom.Desktop>3</OnIdiom.Desktop>
+                                    <OnIdiom.TV>4</OnIdiom.TV>
+                                </OnIdiom>
+                            </GridItemsLayout.Span>
+
+                        </GridItemsLayout>
+                    </CollectionView.ItemsLayout>
+
+                    <!-- Lista vazia -->
+                    <CollectionView.EmptyView>
+                        <StackLayout
+                            VerticalOptions="Center"
+                            Padding="20">
+
+                            <Label
+                                Text="Nenhuma matrícula encontrada"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center"
+                                Style="{StaticResource SubHeadline}"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+
+                            <Button
+                                Text="Adicionar primeira matrícula"
+                                Command="{Binding AddMatriculaCommand}"
+                                Style="{StaticResource ButtonPrimary}"
+                                HeightRequest="50"
+                                Margin="0,20,0,0" />
+
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+
+                    <!-- Template da matrícula -->
+                    <CollectionView.ItemTemplate>
+                        <StaticResource Key="MatriculaItemTemplate" />
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+
+            </RefreshView>
+
+            <!-- Botão flutuante -->
+            <Button
+                Text=""
+                Command="{Binding AddMatriculaCommand}"
+                Style="{StaticResource ButtonPrimary}"
+                WidthRequest="56"
+                HeightRequest="56"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="20">
+
+                <Button.Shadow>
+                    <Shadow
+                        Brush="{AppThemeBinding Light=Black, Dark=LightGray}"
+                        Offset="0,4"
+                        Radius="8"
+                        Opacity="0.3" />
+                </Button.Shadow>
+
+                <Button.ImageSource>
+                    <FontImageSource
+                        FontFamily="MaterialIcons"
+                        Glyph="&#xe145;" />
+                </Button.ImageSource>
+
+            </Button>
+
+        </Grid>
+
+        <!-- Indicador de carregamento -->
+        <ActivityIndicator
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            IsVisible="{Binding IsBusy}"
+            IsRunning="{Binding IsBusy}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Color="{AppThemeBinding Light=#512BD4, Dark=White}" />
+
+    </Grid>
+
+</ContentPage>

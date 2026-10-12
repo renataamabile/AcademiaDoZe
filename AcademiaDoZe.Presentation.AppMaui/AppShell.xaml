@@ -4,13 +4,11 @@
     x:Class="AcademiaDoZe.Presentation.AppMaui.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:AcademiaDoZe.Presentation.AppMaui"
     xmlns:views="clr-namespace:AcademiaDoZe.Presentation.AppMaui.Views"
     Title="Academia do Zé">
 
     <!-- Dashboard -->
     <FlyoutItem Title="Dashboard">
-
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="MaterialIcons"
@@ -21,13 +19,10 @@
         <ShellContent
             ContentTemplate="{DataTemplate views:DashboardListPage}"
             Route="dashboard" />
-
     </FlyoutItem>
-
 
     <!-- Logradouros -->
     <FlyoutItem Title="Logradouros">
-
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="MaterialIcons"
@@ -38,13 +33,10 @@
         <ShellContent
             ContentTemplate="{DataTemplate views:LogradouroListPage}"
             Route="logradouros" />
-
     </FlyoutItem>
-
 
     <!-- Configurações -->
     <FlyoutItem Title="Configurações">
-
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="MaterialIcons"
@@ -55,33 +47,48 @@
         <ShellContent
             ContentTemplate="{DataTemplate views:ConfigPage}"
             Route="configuracoes" />
-
     </FlyoutItem>
 
     <!-- Colaboradores -->
     <FlyoutItem Title="Colaboradores">
         <FlyoutItem.Icon>
             <FontImageSource
-            FontFamily="MaterialIcons"
-            Glyph="&#xea67;" />
+                FontFamily="MaterialIcons"
+                Glyph="&#xea67;"
+                Color="{AppThemeBinding Light=Black, Dark=White}" />
         </FlyoutItem.Icon>
 
         <ShellContent
-        ContentTemplate="{DataTemplate views:ColaboradorListPage}"
-        Route="colaboradores" />
+            ContentTemplate="{DataTemplate views:ColaboradorListPage}"
+            Route="colaboradores" />
     </FlyoutItem>
 
     <!-- Alunos -->
     <FlyoutItem Title="Alunos">
         <FlyoutItem.Icon>
             <FontImageSource
-            FontFamily="MaterialIcons"
-            Glyph="&#xe7fd;" />
+                FontFamily="MaterialIcons"
+                Glyph="&#xe7fd;"
+                Color="{AppThemeBinding Light=Black, Dark=White}" />
         </FlyoutItem.Icon>
 
         <ShellContent
-        ContentTemplate="{DataTemplate views:AlunoListPage}"
-        Route="alunos" />
+            ContentTemplate="{DataTemplate views:AlunoListPage}"
+            Route="alunos" />
+    </FlyoutItem>
+
+    <!-- Matrículas -->
+    <FlyoutItem Title="Matrículas">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="MaterialIcons"
+                Glyph="&#xefec;"
+                Color="{AppThemeBinding Light=Black, Dark=White}" />
+        </FlyoutItem.Icon>
+
+        <ShellContent
+            ContentTemplate="{DataTemplate views:MatriculaListPage}"
+            Route="matriculas" />
     </FlyoutItem>
 
 </Shell>

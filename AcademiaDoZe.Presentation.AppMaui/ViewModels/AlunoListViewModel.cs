@@ -187,7 +187,7 @@ public partial class AlunoListViewModel : BaseViewModel
             "aluno",
             new Dictionary<string, object>
             {
-                ["Aluno"] = aluno
+                ["Id"] = aluno.Id
             });
     }
 
