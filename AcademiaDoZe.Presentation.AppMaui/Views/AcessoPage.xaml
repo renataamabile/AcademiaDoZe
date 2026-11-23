@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AcademiaDoZe.Presentation.AppMaui.ViewModels"
+             x:Class="AcademiaDoZe.Presentation.AppMaui.Views.AcessoPage"
+             Title="Registro de Acessos"
+             BackgroundColor="#17151F">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24"
+                            Spacing="24">
+
+            <!-- CABEÇALHO -->
+            <VerticalStackLayout Spacing="6">
+
+                <Label Text="CONTROLE DE ACESSO"
+                       FontSize="14"
+                       CharacterSpacing="2"
+                       TextColor="#B394F4"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+
+                <Label Text="Controle de Acesso / Catraca"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalTextAlignment="Center"/>
+
+                <Label Text="Selecione o tipo de acesso abaixo"
+                       FontSize="14"
+                       TextColor="#BDB6C9"
+                       HorizontalTextAlignment="Center"/>
+
+            </VerticalStackLayout>
+
+
+            <!-- SELEÇÃO DO TIPO DE PESSOA -->
+            <Border BackgroundColor="#24212F"
+                    Stroke="#40364F"
+                    StrokeThickness="1"
+                    Padding="16"
+                    StrokeShape="RoundRectangle 18">
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="Tipo de acesso"
+                           FontSize="17"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+
+                        <Button Grid.Column="0"
+                                Text="👤  ALUNO"
+                                Command="{Binding SelecionarAlunoCommand}"
+                                BackgroundColor="{Binding CorAluno}"
+                                TextColor="{Binding CorTextoAluno}"
+                                BorderColor="#B394F4"
+                                BorderWidth="2"
+                                CornerRadius="14"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HeightRequest="65"/>
+
+                        <Button Grid.Column="1"
+                                Text="🪪  COLABORADOR"
+                                Command="{Binding SelecionarColaboradorCommand}"
+                                BackgroundColor="{Binding CorColaborador}"
+                                TextColor="{Binding CorTextoColaborador}"
+                                BorderColor="#B394F4"
+                                BorderWidth="2"
+                                CornerRadius="14"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                HeightRequest="65"/>
+
+                    </Grid>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+            <!-- IDENTIFICAÇÃO -->
+            <Border BackgroundColor="#24212F"
+                    Stroke="#40364F"
+                    StrokeThickness="1"
+                    Padding="20"
+                    StrokeShape="RoundRectangle 18">
+
+                <VerticalStackLayout Spacing="18">
+
+                    <VerticalStackLayout Spacing="5">
+
+                        <Label Text="IDENTIFICAÇÃO"
+                               FontSize="13"
+                               CharacterSpacing="1.5"
+                               FontAttributes="Bold"
+                               TextColor="#B394F4"/>
+
+                        <Label Text="{Binding TituloModo}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+
+                        <Label Text="{Binding SubtituloModo}"
+                               FontSize="14"
+                               TextColor="#C5BED1"/>
+
+                    </VerticalStackLayout>
+
+
+                    <!-- CAMPO DO CÓDIGO -->
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label Text="Código da pessoa"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+
+                        <Entry Text="{Binding CodigoPessoa}"
+                               Placeholder="Digite o código"
+                               PlaceholderColor="#82778F"
+                               Keyboard="Numeric"
+                               FontSize="20"
+                               TextColor="White"
+                               BackgroundColor="#17151F"
+                               HeightRequest="60"
+                               HorizontalTextAlignment="Center"/>
+
+                    </VerticalStackLayout>
+
+
+
+                    <!-- ÁREA VISUAL DE IDENTIFICAÇÃO -->
+                    <Border BackgroundColor="#30283A"
+        Stroke="#514364"
+        StrokeThickness="1"
+        Padding="15"
+        StrokeShape="RoundRectangle 14"
+        IsVisible="{Binding ExibirResultado}">
+
+                        <VerticalStackLayout Spacing="12">
+
+                            <Label Text="IDENTIFICAÇÃO E LIBERAÇÃO"
+               FontSize="14"
+               FontAttributes="Bold"
+               TextColor="#D3B7FF"
+               HorizontalOptions="Center"/>
+
+                            <!-- FOTO DA PESSOA -->
+                            <Border WidthRequest="150"
+                HeightRequest="150"
+                Stroke="#A879F5"
+                StrokeThickness="2"
+                BackgroundColor="#24212F"
+                StrokeShape="RoundRectangle 75"
+                HorizontalOptions="Center">
+
+                                <Image Source="{Binding FotoPessoa}"
+                   WidthRequest="146"
+                   HeightRequest="146"
+                   Aspect="AspectFill"/>
+                            </Border>
+
+                            <!-- NOME DA PESSOA -->
+                            <Label Text="{Binding NomePessoa}"
+               FontSize="20"
+               FontAttributes="Bold"
+               TextColor="White"
+               HorizontalTextAlignment="Center"/>
+
+                            <!-- MENSAGEM DE ACESSO -->
+                            <Label Text="{Binding ResultadoAcesso}"
+               FontSize="15"
+               TextColor="White"
+               HorizontalTextAlignment="Center"
+               HorizontalOptions="Center"/>
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+
+
+                    <!-- BOTÃO DE REGISTRO -->
+                    <Button Text="{Binding TextoBotao}"
+                            Command="{Binding RegistrarAcessoCommand}"
+                            BackgroundColor="#A879F5"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="15"
+                            BorderColor="#C7A8FF"
+                            BorderWidth="1"
+                            CornerRadius="15"
+                            HeightRequest="65"
+                            Margin="0,5,0,0"/>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+
+            <!-- HISTÓRICO DE ACESSOS -->
+            <Border BackgroundColor="#24212F"
+        Stroke="#40364F"
+        StrokeThickness="1"
+        Padding="18"
+        StrokeShape="RoundRectangle 18">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Label Text="ACESSOS REGISTRADOS"
+               FontSize="14"
+               CharacterSpacing="1"
+               FontAttributes="Bold"
+               TextColor="#B394F4"/>
+
+                    <Label Text="Histórico do dia"
+               FontSize="22"
+               FontAttributes="Bold"
+               TextColor="White"/>
+
+                    <Button Text="ATUALIZAR HISTÓRICO"
+                Command="{Binding AtualizarHistoricoCommand}"
+                BackgroundColor="#30283A"
+                TextColor="#D3B7FF"
+                BorderColor="#514364"
+                BorderWidth="1"
+                CornerRadius="12"
+                HeightRequest="45"/>
+
+                    <CollectionView ItemsSource="{Binding HistoricoAcessos}"
+                       HeightRequest="350">
+
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout Padding="20"
+                                    Spacing="10">
+
+                                <Label Text="Nenhum acesso registrado hoje."
+                           TextColor="#BDB6C9"
+                           FontSize="14"
+                           HorizontalTextAlignment="Center"/>
+
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+
+                                <Border BackgroundColor="#30283A"
+                            Stroke="#514364"
+                            StrokeThickness="1"
+                            Padding="12"
+                            Margin="0,0,0,10"
+                            StrokeShape="RoundRectangle 12">
+
+                                    <Grid ColumnDefinitions="*,Auto"
+                              RowDefinitions="Auto,Auto,Auto"
+                              ColumnSpacing="10"
+                              RowSpacing="5">
+
+                                        <Label Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="{Binding TipoPessoa}"
+                                   FontAttributes="Bold"
+                                   FontSize="15"
+                                   TextColor="#D3B7FF"/>
+
+                                        <Label Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text="{Binding Movimento}"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="White"
+                                   HorizontalTextAlignment="End"/>
+
+                                        <Label Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="{Binding CodigoPessoa, StringFormat='Código: {0}'}"
+                                   FontSize="13"
+                                   TextColor="#BDB6C9"/>
+
+                                        <Label Grid.Row="1"
+                                   Grid.Column="1"
+                                   Text="{Binding HorarioFormatado}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalTextAlignment="End"/>
+
+                                        <Label Grid.Row="2"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="2"
+                                   Text="{Binding DataFormatada}"
+                                   FontSize="12"
+                                   TextColor="#82778F"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

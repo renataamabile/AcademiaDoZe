@@ -91,4 +91,19 @@
             Route="matriculas" />
     </FlyoutItem>
 
+
+    <!-- Registro de acessos -->
+    <FlyoutItem Title="Acessos">
+        <FlyoutItem.Icon>
+            <FontImageSource
+            FontFamily="MaterialIcons"
+            Glyph="&#xe8f8;"
+            Color="{AppThemeBinding Light=Black, Dark=White}" />
+        </FlyoutItem.Icon>
+
+        <ShellContent
+        ContentTemplate="{DataTemplate views:AcessoPage}"
+        Route="acessos" />
+    </FlyoutItem>
+
 </Shell>

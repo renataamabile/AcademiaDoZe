@@ -15,8 +15,8 @@ public static class ApplicationDependencyInjection
         services.AddTransient<IColaboradorService, ColaboradorService>();
         services.AddTransient<IAlunoService, AlunoService>();
         services.AddTransient<IMatriculaService, MatriculaService>();
-        // Observação: IAcessoAlunoService e IAcessoColaboradorService não existem no projeto atualmente.
-        // Se precisar desses serviços, crie as interfaces e implementações correspondentes.    s
+        services.AddTransient<IAcessoAlunoService, AcessoAlunoService>();
+        services.AddTransient<IAcessoColaboradorService, AcessoColaboradorService>();
         // AddScoped: cria uma instância do serviço por requisição HTTP.
         // AddSingleton: cria uma única instância do serviço durante toda a vida útil da aplicação.
         // AddTransient: cria uma nova instância do serviço toda vez que ele é solicitado.
@@ -40,6 +40,17 @@ public static class ApplicationDependencyInjection
         {
             var config = provider.GetRequiredService<RepositoryConfig>();
             return (Func<IMatriculaRepository>)(() => new MatriculaRepository(config.ConnectionString, config.DatabaseType));
+        });
+
+        services.AddTransient(provider =>
+        {
+            var config = provider.GetRequiredService<RepositoryConfig>();
+            return (Func<IAcessoAlunoRepository>)(() => new AcessoAlunoRepository(config.ConnectionString, config.DatabaseType));
+        });
+        services.AddTransient(provider =>
+        {
+            var config = provider.GetRequiredService<RepositoryConfig>();
+            return (Func<IAcessoColaboradorRepository>)(() => new AcessoColaboradorRepository(config.ConnectionString, config.DatabaseType));
         });
 
         return services;

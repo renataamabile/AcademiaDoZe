@@ -6,6 +6,8 @@ public class AcessoColaborador : Entity, IAggregateRoot
 {
     public int ColaboradorId { get; private set; }
     public DateTime DataHora { get; private set; }
+    public IEnumerable<object> Notifications { get; set; }
+
     private AcessoColaborador(int id, int colaboradorId, DateTime dataHora) : base(id)
     {
         ColaboradorId = colaboradorId;
